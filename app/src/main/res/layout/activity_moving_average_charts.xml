@@ -4,41 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MovingAverageCharts">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.112"
-        android:id="@+id/textView"
-        android:text="Enter the number of days for SMA and EMA: "
-        android:textSize="17sp"/>
-
-    <EditText
-        android:id="@+id/editText"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.195"
-        android:hint="Enter number of days"/>
+        app:layout_constraintVertical_bias="0.248" />
 
-    <Button
-        android:id="@+id/button"
+    <ImageView
+        android:id="@+id/EMA"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:accessibilityPaneTitle="EMA Chart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.326"
-        android:text="Calculate EMA and SMA"/>
+        app:layout_constraintVertical_bias="0.264" />
+
+    <ImageView
+        android:id="@+id/SMA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:accessibilityPaneTitle="SMA Chart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.701" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
