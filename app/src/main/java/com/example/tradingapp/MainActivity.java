@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final TextView textView = (TextView) findViewById(R.id.textView);
-        EditText editText = (EditText) findViewById(R.id.editText);
+        final EditText editText = (EditText) findViewById(R.id.editText);
         Button button = (Button) findViewById(R.id.button);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -29,10 +29,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String days = textView.getText().toString();
+                String days = editText.getText().toString();
 
                 Intent i = new Intent(mainActivity, MovingAverageCharts.class);
-                i.putExtra(TAG, Integer.parseInt(days));
+                i.putExtra(TAG, Integer.valueOf(days));
 
                 startActivity(i);
             }
