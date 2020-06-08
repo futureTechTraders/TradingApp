@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +24,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.DataPoint;
 
 import org.json.JSONObject;
 
@@ -35,7 +39,6 @@ public class MovingAverageCharts extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moving_average_charts);
 
-        final ImageView smaChart = (ImageView) findViewById(R.id.SMA);
         //ImageView emaChart = (ImageView) findViewById(R.id.EMA);
         final TextView textView = (TextView) findViewById(R.id.DATA);
 
@@ -52,8 +55,9 @@ public class MovingAverageCharts extends AppCompatActivity {
         final StringRequest jsonReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
             String data = new String();
-            ArrayList<String> xVals = new ArrayList<>();
-            ArrayList<Double> yVals = new ArrayList<>();
+
+            LineGraphSeries<DataPoint> series;
+            //GraphView.GraphViewData[] viewData = new GraphView.GraphViewData[59];
 
             final int SPACES = 14;
             final int NEXTLINE = 26;
@@ -61,19 +65,28 @@ public class MovingAverageCharts extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
 
+                GraphView smaChart = (GraphView) findViewById(R.id.SMA);
+
                 Log.d("Info", response.toString());
                 //textView.setText(response.toString().substring(0, 11));
                 data = response.toString();
 
                 int startIndex = 6;
+                series = new LineGraphSeries<>();
 
                 for(int i = 0; i < 59; i++) {
 
-                    xVals.add(data.substring(startIndex, startIndex + 10));
-                    yVals.add(Double.parseDouble(data.substring(startIndex + SPACES, startIndex + NEXTLINE)));
+                    //xVals.add(data.substring(startIndex, startIndex + 10));
+                    //yVals.add(Double.parseDouble(data.substring(startIndex + SPACES, startIndex + NEXTLINE)));
 
+                    series.appendData(new DataPoint(i + 1, Double.parseDouble(data.substring(startIndex + SPACES, startIndex + NEXTLINE))), true, 59);
+                    //viewData[i] = new GraphView.GraphViewData(i + 1, Double.parseDouble(data.substring(startIndex + SPACES, startIndex + NEXTLINE)));
                     startIndex += NEXTLINE;
                 }
+
+                //GraphViewSeries graphSeries = new GraphViewSeries(viewData);
+
+                smaChart.addSeries(series);
             }
         }, new Response.ErrorListener() {
             @Override
