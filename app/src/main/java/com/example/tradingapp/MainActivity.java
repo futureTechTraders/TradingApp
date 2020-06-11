@@ -1,14 +1,20 @@
 package com.example.tradingapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationMenu;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,22 +26,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final TextView textView = (TextView) findViewById(R.id.textView);
-        final EditText editText = (EditText) findViewById(R.id.editText);
-        Button button = (Button) findViewById(R.id.button);
+        BottomNavigationView bottomNav = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                String days = editText.getText().toString();
-
-                Intent i = new Intent(mainActivity, MovingAverageCharts.class);
-                i.putExtra(TAG, Integer.valueOf(days));
-
-                startActivity(i);
-            }
-        });
+        Fragment home = new HomeFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, home).commit();
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+                    Fragment selected = null;
+
+                    switch(menuItem.getItemId()) {
+
+                        case R.id.action_home:
+                            selected = new HomeFragment();
+                            break;
+
+                        case R.id.action_sma_ema:
+                            selected = new MovingAveragesFragment();
+                            break;
+
+                        case R.id.action_stock_bot:
+                            selected = new StockBotFragment();
+                            break;
+                    }
+
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selected).commit();
+
+                    return true;
+                }
+            };
 }

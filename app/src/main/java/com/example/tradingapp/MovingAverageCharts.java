@@ -49,7 +49,7 @@ public class MovingAverageCharts extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         Log.d(SMATYPE, String.valueOf(days));
-        String url = "http://192.168.248.106:3000/name?days=" + String.valueOf(days);
+        String url = "https://cuddly-chipmunk-57.serverless.social/name?days=" + String.valueOf(days);
         //String url = "https://developer.android.com/training/volley/simple#java";
 
         final StringRequest jsonReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
