@@ -59,7 +59,7 @@ public class MovingAveragesFragment extends Fragment {
 
                 RequestQueue queue = Volley.newRequestQueue(getContext());
                 Log.d("DAYS", String.valueOf(days));
-                String url = "https://0e5a956d6589.ngrok.io/name?days=" + String.valueOf(days) + "&indicator=" + betterSpinner.getText();
+                String url = "https://cb3c50999667.ngrok.io/name?days=" + String.valueOf(days) + "&indicator=sma_ema";
 
                 final StringRequest jsonReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
