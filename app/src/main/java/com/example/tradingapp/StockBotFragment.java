@@ -62,7 +62,7 @@ public class StockBotFragment extends Fragment {
 
                 int days = Integer.parseInt(timeframe.getText().toString());
 
-                String url = "https://cb3c50999667.ngrok.io/name?ticker=" + ticker.getText().toString() + "&period="
+                String url = "https://9dad08d01cef.ngrok.io/name?ticker=" + ticker.getText().toString() + "&period="
                         + period.getText().toString() + "&interval=" + interval.getText().toString() + "&start=" + start.getText().toString() +
                         "&end=" + end.getText().toString() + "&days=" + days + "&indicator=stock_bot";
 
@@ -106,6 +106,9 @@ public class StockBotFragment extends Fragment {
                         graph.addSeries(smaData);
                         graph.addSeries(macdData);
                         graph.addSeries(signalData);
+
+                        Log.d(TAG, result);
+                        output.setText(result);
 
                         graph.getGridLabelRenderer().setVerticalLabelsColor(Color.WHITE);
                         graph.getViewport().setMinY(-20);

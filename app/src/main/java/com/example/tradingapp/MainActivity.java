@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
 
                         case R.id.action_sma_ema:
-                            selected = new MovingAveragesFragment();
+                            selected = new StockWatchlistFragment();
                             break;
 
                         case R.id.action_stock_bot:

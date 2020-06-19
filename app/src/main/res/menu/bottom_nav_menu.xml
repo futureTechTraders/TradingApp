@@ -11,7 +11,7 @@
         android:id="@+id/action_sma_ema"
         android:enabled="true"
         android:icon="@drawable/ic_action_calculator"
-        android:title="EMA/SMA"
+        android:title="Watchlist"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_stock_bot"
