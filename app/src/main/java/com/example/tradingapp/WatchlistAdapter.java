@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -32,13 +33,13 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
     final String TAG = "Adapter";
 
     List<String> ticker;
-    StockClosingPrice prevClosingPrice;
+    List<StockClosingPrice> prevClosingPrices;
     Context context;
 
-    public WatchlistAdapter(List<String> ticker, StockClosingPrice prevClosingPrice, Context context) {
+    public WatchlistAdapter(List<String> ticker, List<StockClosingPrice> prevClosingPrices, Context context) {
 
         this.ticker = ticker;
-        this.prevClosingPrice = prevClosingPrice;
+        this.prevClosingPrices = prevClosingPrices;
         this.context = context;
     }
 
@@ -74,11 +75,20 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+        final int index = position;
+
+        for(int i = 0; i < ticker.size(); i++) {
+
+            Log.d(TAG, ticker.get(i));
+        }
+
         TextView holderTicker = (TextView) holder.ticker;
         final TextView holderPercentChange = (TextView) holder.percentChange;
         final TextView holderClosePrice = (TextView) holder.closePrice;
 
-        String url = "https://9dad08d01cef.ngrok.io/name?ticker=" + ticker.get(position) + "&indicator=watchlist";
+        //Log.d(TAG, ticker.get(position));
+
+        String url = "https://73d5f2e64836.ngrok.io/name?ticker=" + ticker.get(position) + "&indicator=watchlist";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -86,7 +96,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
             @Override
             public void onResponse(String response) {
 
-                //Log.d(TAG, response);
+                Log.d(TAG, response);
 
                 String[] data = response.split("@", 6);
                 ArrayList<Double> stockInformation = extractData(response);
@@ -95,40 +105,43 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
 
                     holderClosePrice.setText(String.valueOf(stockInformation.get(1)));
                     double percentChange = (stockInformation.get(1) - stockInformation.get(0)) / stockInformation.get((0));
+                    DecimalFormat df = new DecimalFormat("###.###");
 
                     if(percentChange > 0) {
 
-                        holderPercentChange.setText(String.valueOf(percentChange));
+                        holderPercentChange.setText(String.valueOf(df.format(percentChange)) + "%");
                         holderPercentChange.setTextColor(Color.GREEN);
                     } else {
 
-                        holderPercentChange.setText(String.valueOf(percentChange));
+                        holderPercentChange.setText(String.valueOf(df.format(percentChange)) + "%");
                         holderPercentChange.setTextColor(Color.RED);
                     }
                 } else {
 
                     holderClosePrice.setText(String.valueOf(stockInformation.get(0)));
 
-                    if(prevClosingPrice.getPrice() == 0) {
+                    if(prevClosingPrices.get(index).getPrice() == 0) {
 
                         holderPercentChange.setText("N/A");
 
                     } else {
 
-                        double percentChange = (stockInformation.get(0) - prevClosingPrice.getPrice()) / prevClosingPrice.getPrice();
+                        double percentChange = ((stockInformation.get(0) - prevClosingPrices.get(index).getPrice()) / prevClosingPrices.get(index).getPrice()) * 100;
+                        DecimalFormat df = new DecimalFormat("###.###");
 
                         if(percentChange > 0) {
 
-                            holderPercentChange.setText(String.valueOf(percentChange));
+                            holderPercentChange.setText(String.valueOf(df.format(percentChange)) + "%");
                             holderPercentChange.setTextColor(Color.GREEN);
                         } else {
 
-                            holderPercentChange.setText(String.valueOf(percentChange));
+                            holderPercentChange.setText(String.valueOf(df.format(percentChange)) + "%");
                             holderPercentChange.setTextColor(Color.RED);
                         }
-
-                        prevClosingPrice.setPrice(stockInformation.get(0));
                     }
+
+                    prevClosingPrices.get(index).setPrice(stockInformation.get(0));
+                    Log.d(TAG, String.valueOf(prevClosingPrices.get(index).getPrice()));
                 }
             }
         }, new Response.ErrorListener() {
@@ -146,6 +159,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(jsonReq);
+        
 
         holderTicker.setText(ticker.get(position));
         //holderPercentChange.setText(percentChange.get(position).toString());
@@ -155,6 +169,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
     @Override
     public int getItemCount() {
 
+        Log.d(TAG, "Item Count" + String.valueOf(ticker.size()));
         return ticker.size();
     }
 
@@ -224,5 +239,11 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
         }
 
         return stockInformation;
+    }
+
+    public void addItem(String ticker, StockClosingPrice closingPrice) {
+
+        this.ticker.add(ticker);
+        prevClosingPrices.add(closingPrice);
     }
 }

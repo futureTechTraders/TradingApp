@@ -62,7 +62,7 @@ public class StockBotFragment extends Fragment {
 
                 int days = Integer.parseInt(timeframe.getText().toString());
 
-                String url = "https://9dad08d01cef.ngrok.io/name?ticker=" + ticker.getText().toString() + "&period="
+                String url = "https://73d5f2e64836.ngrok.io/name?ticker=" + ticker.getText().toString() + "&period="
                         + period.getText().toString() + "&interval=" + interval.getText().toString() + "&start=" + start.getText().toString() +
                         "&end=" + end.getText().toString() + "&days=" + days + "&indicator=stock_bot";
 

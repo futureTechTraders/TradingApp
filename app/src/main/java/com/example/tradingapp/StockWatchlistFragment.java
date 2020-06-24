@@ -31,8 +31,8 @@ public class StockWatchlistFragment extends Fragment {
     final String TAG = "Watchlist";
 
     ArrayList<String> ticker = new ArrayList<>();
+    ArrayList<StockClosingPrice> prevClosingPrices = new ArrayList<>();
 
-    boolean isAdded = false;
     String tickerSymbol;
 
     @Nullable
@@ -40,13 +40,11 @@ public class StockWatchlistFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_stock_watchlist, container, false);
-
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.watchListRecycler);
-        StockClosingPrice prevClosingPrice = new StockClosingPrice();
-
-        WatchlistAdapter recyclerAdapter = new WatchlistAdapter(ticker, prevClosingPrice, getContext());
+        final WatchlistAdapter recyclerAdapter = new WatchlistAdapter(ticker, prevClosingPrices, getActivity());
+        //recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(recyclerAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -74,10 +72,10 @@ public class StockWatchlistFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
 
                         tickerSymbol = editText.getText().toString();
-                        isAdded = true;
+                        StockClosingPrice prevPrice = new StockClosingPrice();
 
-                        Log.d(TAG, tickerSymbol);
-                        ticker.add(tickerSymbol);
+                        recyclerAdapter.addItem(tickerSymbol, prevPrice);
+                        recyclerAdapter.notifyDataSetChanged();
                     }
                 });
 
