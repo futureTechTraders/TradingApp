@@ -20,11 +20,21 @@ public class MainActivity extends AppCompatActivity {
 
     private Context mainActivity = MainActivity.this;
     private final String TAG = "DAYS";
+    private boolean isSavedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(savedInstanceState == null) {
+
+            isSavedInstanceState = false;
+        }
+        else {
+
+            isSavedInstanceState = true;
+        }
 
         BottomNavigationView bottomNav = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
@@ -44,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
                     switch(menuItem.getItemId()) {
 
                         case R.id.action_home:
+
                             selected = new HomeFragment();
                             break;
 

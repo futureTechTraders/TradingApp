@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -23,8 +25,11 @@ import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Date;
+import java.util.ListIterator;
 
 import javax.xml.transform.ErrorListener;
 
@@ -32,11 +37,13 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
 
     final String TAG = "Adapter";
 
-    List<String> ticker;
+    ArrayList<String> ticker;
     List<StockClosingPrice> prevClosingPrices;
     Context context;
 
-    public WatchlistAdapter(List<String> ticker, List<StockClosingPrice> prevClosingPrices, Context context) {
+    ArrayList<Double> dataPoints = new ArrayList<>();
+
+    public WatchlistAdapter(ArrayList<String> ticker, List<StockClosingPrice> prevClosingPrices, Context context) {
 
         this.ticker = ticker;
         this.prevClosingPrices = prevClosingPrices;
@@ -88,7 +95,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
 
         //Log.d(TAG, ticker.get(position));
 
-        String url = "https://73d5f2e64836.ngrok.io/name?ticker=" + ticker.get(position) + "&indicator=watchlist";
+        String url = "https://0586c288ea0e.ngrok.io/name?ticker=" + ticker.get(position) + "&indicator=watchlist";
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -101,7 +108,29 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
                 String[] data = response.split("@", 6);
                 ArrayList<Double> stockInformation = extractData(response);
 
-                if(stockInformation.size() == 10) {
+                if(data[0].indexOf("Data doesn't exist") > 0) {
+
+                    if(prevClosingPrices.get(index).getPrice() == 0) {
+
+                        holderPercentChange.setText("N/A");
+                        holderPercentChange.setTextColor(Color.WHITE);
+                        holderClosePrice.setText("N/A");
+                    }
+                    else {
+
+                        holderPercentChange.setText("N/A");
+                        holderClosePrice.setText(String.valueOf(prevClosingPrices.get(index).getPrice()));
+                    }
+
+                    Toast toast = Toast.makeText(context, "Data unavailble at this specific time", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                else if(stockInformation.size() == 10) {
+
+                    if(!(dataPoints.indexOf(stockInformation.get(1)) >= 0)) {
+
+                        dataPoints.add(stockInformation.get(1));
+                    }
 
                     holderClosePrice.setText(String.valueOf(stockInformation.get(1)));
                     double percentChange = (stockInformation.get(1) - stockInformation.get(0)) / stockInformation.get((0));
@@ -116,7 +145,13 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
                         holderPercentChange.setText(String.valueOf(df.format(percentChange)) + "%");
                         holderPercentChange.setTextColor(Color.RED);
                     }
-                } else {
+                }
+                else {
+
+                    if(!(dataPoints.indexOf(stockInformation.get(1)) >= 0)) {
+
+                        dataPoints.add(stockInformation.get(1));
+                    }
 
                     holderClosePrice.setText(String.valueOf(stockInformation.get(0)));
 
@@ -141,7 +176,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
                     }
 
                     prevClosingPrices.get(index).setPrice(stockInformation.get(0));
-                    Log.d(TAG, String.valueOf(prevClosingPrices.get(index).getPrice()));
+                    Log.d(TAG, ticker.get(index) + String.valueOf(prevClosingPrices.get(index).getPrice()));
                 }
             }
         }, new Response.ErrorListener() {
@@ -178,7 +213,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
         String[] data = response.split("@", 6);
         ArrayList<Double> stockInformation = new ArrayList<>();
 
-        for(int i = 0; i < data.length; i++) {
+        for(int i = 1; i < data.length; i++) {
 
             int traverse = 0;
             boolean isNumber = false;
@@ -245,5 +280,15 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
 
         this.ticker.add(ticker);
         prevClosingPrices.add(closingPrice);
+    }
+
+    public ArrayList<Double> getDataPoints() {
+
+        return dataPoints;
+    }
+
+    public ArrayList<String> getTicker() {
+
+        return ticker;
     }
 }

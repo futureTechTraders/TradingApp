@@ -7,129 +7,123 @@
     android:background="#323232"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/ticker"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="622dp"
-        android:hint="Ticker"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/results"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/timeframe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginTop="16dp"
-        android:hint="Timeframe"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/start"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="80dp"
-        android:hint="Start Date"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@+id/ticker"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:hint="End Date"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        app:layout_constraintBaseline_toBaselineOf="@+id/start"
-        app:layout_constraintStart_toStartOf="@+id/timeframe" />
-
-    <EditText
-        android:id="@+id/interval"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="20dp"
-        android:hint="Interval"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@+id/end"
-        app:layout_constraintTop_toBottomOf="@+id/end" />
-
-    <EditText
-        android:id="@+id/period"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:hint="Period"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@+id/start"
-        app:layout_constraintTop_toBottomOf="@+id/start" />
-
-    <Button
-        android:id="@+id/initiateBot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="20dp"
-        android:background="#00994C"
-        android:text="Entry/Exit Point"
-        android:textColor="#FFFFFF"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/period" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/results"
-        android:layout_width="291dp"
-        android:layout_height="0dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="41dp"
-        android:layout_marginRight="41dp"
-        android:layout_marginBottom="27dp"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ticker" />
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ticker"
+            android:paddingBottom="5dp"
+            android:textColorHint="#32CD32"
+            app:hintTextAppearance="@style/MyHintStyle">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ticker"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Start"
+            android:paddingBottom="5dp"
+            android:textColorHint="#32CD32"
+            app:hintTextAppearance="@style/MyHintStyle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/start"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="End"
+            android:outlineAmbientShadowColor="#FFFFFF"
+            android:paddingBottom="5dp"
+            android:textColorHint="#32CD32"
+            app:boxStrokeColor="#fff"
+            app:hintTextAppearance="@style/MyHintStyle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/end"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Interval"
+            android:paddingBottom="5dp"
+            android:textColorHint="#32CD32"
+            app:hintTextAppearance="@style/MyHintStyle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/interval"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Period"
+            android:paddingBottom="5dp"
+            android:textColorHint="#32CD32"
+            app:hintTextAppearance="@style/MyHintStyle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/period"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Timeframe"
+            android:paddingBottom="5dp"
+            android:textColorHint="#32CD32"
+            app:hintTextAppearance="@style/MyHintStyle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/timeframe"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+
+    <!--
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graphView"
         android:layout_width="365dp"
@@ -144,6 +138,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.7" />
+        -->
+
+
+    <Button
+        android:id="@+id/initiateBot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:text="Entry/Exit Point"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <com.github.mikephil.charting.charts.CandleStickChart
+        android:id="@+id/candle_stick_chart"
+        android:layout_width="396dp"
+        android:layout_height="266dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="76dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

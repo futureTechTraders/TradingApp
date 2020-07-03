@@ -13,6 +13,7 @@
         android:id="@+id/linkText"
         android:layout_width="407dp"
         android:layout_height="33dp"
+        android:fontFamily="@font/advent_pro_bold"
         android:paddingLeft="5dp"
         android:textColor="#0066CC"
         tools:layout_editor_absoluteY="20dp">
@@ -28,6 +29,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="136dp"
         android:layout_marginLeft="136dp"
+        android:fontFamily="@font/advent_pro_bold"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/linkText"

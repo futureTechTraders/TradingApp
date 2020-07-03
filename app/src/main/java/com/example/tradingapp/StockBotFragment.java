@@ -1,6 +1,7 @@
 package com.example.tradingapp;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -22,6 +23,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.mikephil.charting.charts.CandleStickChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.CandleData;
+import com.github.mikephil.charting.data.CandleDataSet;
+import com.github.mikephil.charting.data.CandleEntry;
+import com.google.android.material.textfield.TextInputEditText;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -40,20 +49,46 @@ public class StockBotFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_stock_bot, container, false);
 
-        final EditText ticker = (EditText) view.findViewById(R.id.ticker);
-        final EditText period = (EditText) view.findViewById(R.id.period);
-        final EditText interval = (EditText) view.findViewById(R.id.interval);
-        final EditText start = (EditText) view.findViewById(R.id.start);
-        final EditText end = (EditText) view.findViewById(R.id.end);
-        final EditText timeframe = (EditText) view.findViewById(R.id.timeframe);
+        final TextInputEditText ticker = (TextInputEditText) view.findViewById(R.id.ticker);
+        final TextInputEditText period = (TextInputEditText) view.findViewById(R.id.period);
+        final TextInputEditText interval = (TextInputEditText) view.findViewById(R.id.interval);
+        final TextInputEditText start = (TextInputEditText) view.findViewById(R.id.start);
+        final TextInputEditText end = (TextInputEditText) view.findViewById(R.id.end);
+        final TextInputEditText timeframe = (TextInputEditText) view.findViewById(R.id.timeframe);
 
         Button button = (Button) view.findViewById(R.id.initiateBot);
-        final TextView output = (TextView) view.findViewById(R.id.results);
+        //final TextView output = (TextView) view.findViewById(R.id.results);
 
+        final CandleStickChart candleStickChart = (CandleStickChart) view.findViewById(R.id.candle_stick_chart);
+        candleStickChart.setHighlightPerDragEnabled(true);
+        candleStickChart.setNoDataText("");
+        candleStickChart.getDescription().setEnabled(false);
+
+        YAxis yAxis = candleStickChart.getAxisLeft();
+        YAxis rightAxis = candleStickChart.getAxisRight();
+        yAxis.setDrawGridLines(false);
+        rightAxis.setDrawGridLines(false);
+        candleStickChart.requestDisallowInterceptTouchEvent(false);
+
+        XAxis xAxis = candleStickChart.getXAxis();
+
+        xAxis.setDrawGridLines(false);// disable x axis grid lines
+        xAxis.setDrawLabels(false);
+        rightAxis.setTextColor(Color.WHITE);
+        yAxis.setDrawLabels(false);
+        xAxis.setGranularity(1f);
+        xAxis.setGranularityEnabled(true);
+        xAxis.setAvoidFirstLastClipping(true);
+
+        Legend l = candleStickChart.getLegend();
+        l.setEnabled(true);
+
+        /*
         final GraphView graph = (GraphView) view.findViewById(R.id.graphView);
         graph.getGridLabelRenderer().setGridColor(Color.WHITE);
         graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.WHITE);
         graph.getGridLabelRenderer().setVerticalLabelsColor(Color.WHITE);
+         */
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -62,7 +97,7 @@ public class StockBotFragment extends Fragment {
 
                 int days = Integer.parseInt(timeframe.getText().toString());
 
-                String url = "https://73d5f2e64836.ngrok.io/name?ticker=" + ticker.getText().toString() + "&period="
+                String url = "https://0586c288ea0e.ngrok.io/name?ticker=" + ticker.getText().toString() + "&period="
                         + period.getText().toString() + "&interval=" + interval.getText().toString() + "&start=" + start.getText().toString() +
                         "&end=" + end.getText().toString() + "&days=" + days + "&indicator=stock_bot";
 
@@ -70,130 +105,119 @@ public class StockBotFragment extends Fragment {
 
                 final StringRequest jsonReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
+                    /*
                     LineGraphSeries<DataPoint> emaData = new LineGraphSeries<>();
                     LineGraphSeries<DataPoint> smaData = new LineGraphSeries<>();
                     LineGraphSeries<DataPoint> macdData = new LineGraphSeries<>();
                     LineGraphSeries<DataPoint> signalData = new LineGraphSeries<>();
+                     */
+
+                    ArrayList<Double> close = new ArrayList<>();
+                    ArrayList<Double> open = new ArrayList<>();
+                    ArrayList<Double> high = new ArrayList<>();
+                    ArrayList<Double> low = new ArrayList<>();
+
+                    ArrayList<CandleEntry> candleEntries = new ArrayList<>();
 
                     @Override
                     public void onResponse(String response) {
 
-                        String[] data = response.split("Name: EMA, dtype: float64");
-                        String ema = data[0];
+                        Log.d(TAG, response);
 
-                        data = data[1].split("Name: SMA, dtype: float64");
-                        String sma = data[0];
+                        String data[] = response.split("@", 6);
 
-                        String[] data2 = data[1].split("Name: MACD, dtype: float64");
-                        String macd = data2[0];
-                        String signalWithResult = data2[1];
+                        close = extractData(data[0]);
+                        open = extractData(data[1]);
+                        high = extractData(data[2]);
+                        low = extractData(data[3]);
 
-                        String signal = signalWithResult.substring(0, signalWithResult.indexOf("Name: signal, dtype: float64"));
-                        String result = signalWithResult.substring(signalWithResult.indexOf("Name: signal, dtype: float64") + 28);
+                        for(int i = 0; i < close.size(); i++) {
 
-                        Log.d(TAG, signal);
+                            candleEntries.add(new CandleEntry(i, high.get(i).floatValue(), low.get(i).floatValue(), open .get(i).floatValue(), close.get(i).floatValue()));
+                        }
 
-                        emaData = extractData(ema);
-                        smaData = extractData(sma);
-                        macdData = extractData(macd);
-                        signalData = extractData(signal);
+                        CandleDataSet set1 = new CandleDataSet(candleEntries, "DataSet 1");
+                        set1.setColor(Color.rgb(80, 80, 80));
+                        set1.setShadowWidth(0.8f);
+                        set1.setDecreasingColor(getResources().getColor(R.color.red));
+                        set1.setDecreasingPaintStyle(Paint.Style.FILL);
+                        set1.setIncreasingColor(getResources().getColor(R.color.colorAccent));
+                        set1.setIncreasingPaintStyle(Paint.Style.FILL);
+                        set1.setNeutralColor(Color.LTGRAY);
+                        set1.setDrawValues(false);
 
-                        emaData.setColor(Color.YELLOW);
-                        macdData.setColor(Color.rgb(0, 204, 0));
-                        signalData.setColor(Color.rgb(153, 0, 153));
 
-                        graph.addSeries(emaData);
-                        graph.addSeries(smaData);
-                        graph.addSeries(macdData);
-                        graph.addSeries(signalData);
+                        // create a data object with the datasets
+                        CandleData candleData = new CandleData(set1);
+                        // set data
+                        candleStickChart.setData(candleData);
+                        candleStickChart.invalidate();
 
-                        Log.d(TAG, result);
-                        output.setText(result);
-
-                        graph.getGridLabelRenderer().setVerticalLabelsColor(Color.WHITE);
-                        graph.getViewport().setMinY(-20);
-                        graph.getViewport().setMaxY(400);
-                        graph.getViewport().setXAxisBoundsManual(true);
-                        graph.getViewport().setYAxisBoundsManual(true);
+                        //output.setText(data[4]);
                     }
 
-                    public LineGraphSeries<DataPoint> extractData(String response) {
+                    public ArrayList<Double> extractData(String data) {
 
-                        LineGraphSeries<DataPoint> data = new LineGraphSeries<>();
+                        ArrayList<Double> stockInformation = new ArrayList<>();
 
+                        int traverse = 0;
                         boolean isNumber = false;
-                        int numbers = 0;
-                        int dataPoint = 1;
-                        int i = 0;
+                        int dataPoint = 0;
                         int size = 0;
+                        int num = 0;
 
-                        while(i < response.length()) {
+                        while(traverse < data.length()) {
 
                             try {
 
-                                Integer.parseInt(Character.toString(response.charAt(i)));
+                                int num2 = Integer.parseInt(Character.toString(data.charAt(traverse)));
 
                                 if(!isNumber) {
 
-                                    if (numbers % 2 != 0) {
+                                    if(num % 2 == 0) {
 
-                                        isNumber = true;
-                                        i++;
-                                        size++;
+                                        traverse += 10;
+                                        dataPoint++;
+                                        num++;
 
                                     } else {
 
-                                        dataPoint++;
-                                        i += 10;
-                                        numbers++;
+                                        //Log.d(TAG, "Info Extracted");
+                                        isNumber = true;
+                                        size++;
+                                        traverse++;
                                     }
-                                }
-                                else {
 
-                                    i++;
+                                } else {
+
                                     size++;
+                                    traverse++;
                                 }
-
                             } catch(NumberFormatException e) {
 
-                                if(response.charAt(i) == '.') {
+                                if(data.charAt(traverse) == '.') {
 
-                                    i++;
+                                    //Log.d(TAG, "PERIOD");
                                     size++;
-                                }
-                                else if(response.charAt(i) == 'N' && response.charAt(i + 1) == 'a') {
+                                    traverse++;
 
-                                    //data.appendData(new DataPoint(dataPoint, 0), true, dataPoint);
-                                    i += 3;
-                                    numbers++;
-                                }
-                                else if(response.charAt(i) == '-') {
+                                } else if (isNumber){
 
-                                    isNumber = true;
-                                    i++;
-                                    size++;
-                                }
-                                else {
+                                    //Log.d(TAG, data[i].substring(traverse - size, traverse));
+                                    stockInformation.add(Double.parseDouble(data.substring(traverse - size, traverse)));
+                                    traverse++;
+                                    num++;
+                                    size = 0;
+                                    isNumber = false;
 
-                                    if(isNumber) {
+                                } else {
 
-                                        double yValue = Double.valueOf(response.substring(i - size, i));
-                                        size = 0;
-                                        i++;
-                                        isNumber = false;
-                                        numbers++;
-
-                                        data.appendData(new DataPoint(dataPoint, yValue), true, dataPoint);
-                                    }
-                                    else {
-
-                                        i++;
-                                    }
+                                    traverse++;
                                 }
                             }
                         }
 
-                        return data;
+                        return stockInformation;
                     }
 
                 }, new Response.ErrorListener() {
