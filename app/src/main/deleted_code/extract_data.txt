@@ -1,0 +1,75 @@
+LineGraphSeries<DataPoint> data = new LineGraphSeries<>();
+
+                        boolean isNumber = false;
+                        int numbers = 0;
+                        int dataPoint = 1;
+                        int i = 0;
+                        int size = 0;
+
+                        while(i < response.length()) {
+
+                            try {
+
+                                Integer.parseInt(Character.toString(response.charAt(i)));
+
+                                if(!isNumber) {
+
+                                    if (numbers % 2 != 0) {
+
+                                        isNumber = true;
+                                        i++;
+                                        size++;
+
+                                    } else {
+
+                                        dataPoint++;
+                                        i += 10;
+                                        numbers++;
+                                    }
+                                }
+                                else {
+
+                                    i++;
+                                    size++;
+                                }
+
+                            } catch(NumberFormatException e) {
+
+                                if(response.charAt(i) == '.') {
+
+                                    i++;
+                                    size++;
+                                }
+                                else if(response.charAt(i) == 'N' && response.charAt(i + 1) == 'a') {
+
+                                    //data.appendData(new DataPoint(dataPoint, 0), true, dataPoint);
+                                    i += 3;
+                                    numbers++;
+                                }
+                                else if(response.charAt(i) == '-') {
+
+                                    isNumber = true;
+                                    i++;
+                                    size++;
+                                }
+                                else {
+
+                                    if(isNumber) {
+
+                                        double yValue = Double.valueOf(response.substring(i - size, i));
+                                        size = 0;
+                                        i++;
+                                        isNumber = false;
+                                        numbers++;
+
+                                        data.appendData(new DataPoint(dataPoint, yValue), true, dataPoint);
+                                    }
+                                    else {
+
+                                        i++;
+                                    }
+                                }
+                            }
+                        }
+
+                        return data;
